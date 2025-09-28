@@ -1322,22 +1322,20 @@
         let users = {};
         let isDataLoaded = false;
 
-        // GitHub API configuration
-        const GITHUB_REPO = 'skibidiandulka/czech-homework-calendar';
-        const DATA_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/data.json`;
-        const UPDATE_URL = `https://api.github.com/repos/${GITHUB_REPO}/dispatches`;
+        // Simple GitHub-based shared storage (read-only for now)
+        const GITHUB_DATA_URL = 'https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/data.json';
 
-        async function loadDataFromGitHub() {
+        async function loadDataFromDatabase() {
             try {
                 console.log('Loading data from GitHub...');
-                const response = await fetch(DATA_URL + '?cache=' + Date.now());
+                const response = await fetch(GITHUB_DATA_URL + '?cache=' + Date.now());
                 const data = await response.json();
 
-                events = data.events || {};
-                users = data.users || {};
+                events = data?.events || {};
+                users = data?.users || {};
                 isDataLoaded = true;
 
-                console.log('Data loaded successfully:', { events, users });
+                console.log('Data loaded successfully from GitHub:', { events, users });
 
                 // Re-render calendar after data loads
                 if (window.innerWidth <= 768) {
@@ -1363,45 +1361,40 @@
             }
         }
 
-        async function saveDataToGitHub() {
+        async function saveDataToDatabase() {
             try {
-                console.log('Saving data to GitHub...');
+                console.log('Saving data - using localStorage backup for now...');
                 const data = {
                     events,
                     users,
                     lastUpdated: new Date().toISOString()
                 };
 
-                // For now, just log - we'll implement GitHub dispatch later
                 console.log('Data to save:', data);
 
-                // TODO: Implement GitHub repository dispatch
-                // await fetch(UPDATE_URL, {
-                //     method: 'POST',
-                //     headers: {
-                //         'Authorization': 'token YOUR_TOKEN',
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify({
-                //         event_type: 'update-calendar-data',
-                //         client_payload: { data: JSON.stringify(data) }
-                //     })
-                // });
+                // For now, save to localStorage as backup
+                localStorage.setItem('calendar_backup', JSON.stringify(data));
+
+                // TODO: Implement proper GitHub API or webhook for saving
+                console.log('Data backed up to localStorage. Real sync coming soon!');
+
+                // Show user notification
+                alert('Data saved locally. Sync between devices coming soon!');
 
                 return true;
             } catch (error) {
-                console.error('Failed to save data to GitHub:', error);
+                console.error('Failed to save data:', error);
                 return false;
             }
         }
 
         // Legacy function names for compatibility
         function saveEvents() {
-            return saveDataToGitHub();
+            return saveDataToDatabase();
         }
 
         function saveUsers() {
-            return saveDataToGitHub();
+            return saveDataToDatabase();
         }
 
         // Czech month and day names
@@ -2252,8 +2245,8 @@
             console.log('=== INITIALIZING CALENDAR ===');
             console.log('Screen width:', window.innerWidth);
 
-            // Load data from GitHub first
-            await loadDataFromGitHub();
+            // Load data from database first
+            await loadDataFromDatabase();
 
             console.log('=== DEBUG INFO ===');
             console.log('Users data:', users);
