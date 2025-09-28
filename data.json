@@ -1,1 +1,41 @@
-{"test": "test"}
+{
+  "events": {
+    "2025-09-29": [
+      {
+        "id": "1727559600000",
+        "name": "Matematika cvičení",
+        "subject": "MAT",
+        "description": "Dokončit kapitolu 5 - rovnice",
+        "type": "homework",
+        "date": "2025-09-29",
+        "createdBy": "admin",
+        "createdAt": "2025-09-28T21:00:00.000Z"
+      }
+    ],
+    "2025-10-01": [
+      {
+        "id": "1727646000000",
+        "name": "Test z dějepisu",
+        "subject": "DĚJ",
+        "description": "Středověk - 10.-13. století",
+        "type": "test",
+        "date": "2025-10-01",
+        "createdBy": "admin",
+        "createdAt": "2025-09-28T21:00:00.000Z"
+      }
+    ]
+  },
+  "users": {
+    "admin": {
+      "password": "asdf",
+      "tier": "admin",
+      "name": "Administrátor"
+    },
+    "student": {
+      "password": "heslo",
+      "tier": "basic",
+      "name": "Testovací student"
+    }
+  },
+  "lastUpdated": "2025-09-28T21:00:00.000Z"
+}
