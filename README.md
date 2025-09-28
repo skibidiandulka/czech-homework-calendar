@@ -14,7 +14,7 @@ Moderní aplikace pro správu domácích úkolů a testů v češtině s automat
 
 ## 🚀 Použití
 
-Aplikace je dostupná na: **[GitHub Pages URL bude zde po deployi]**
+Aplikace je dostupná na: **https://skibidiandulka.github.io/czech-homework-calendar/**
 
 ### Výchozí administrátorský účet
 - **Username:** admin
