@@ -1322,8 +1322,10 @@
         let users = {};
         let isDataLoaded = false;
 
-        // Simple GitHub-based shared storage (read-only for now)
-        const GITHUB_DATA_URL = 'https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/data.json';
+        // GitHub API configuration
+        const GITHUB_REPO = 'skibidiandulka/czech-homework-calendar';
+        const GITHUB_DATA_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/data.json`;
+        let GITHUB_TOKEN = localStorage.getItem('github_token') || null;
 
         async function loadDataFromDatabase() {
             try {
@@ -1363,7 +1365,26 @@
 
         async function saveDataToDatabase() {
             try {
-                console.log('Saving data - using localStorage backup for now...');
+                // Check if we have GitHub token
+                if (!GITHUB_TOKEN) {
+                    const token = prompt('Pro synchronizaci zadej GitHub token (Settings → Developer settings → Personal access tokens):\n\nPotřebná oprávnění:\n✅ repo\n✅ workflow');
+                    if (token) {
+                        GITHUB_TOKEN = token;
+                        localStorage.setItem('github_token', token);
+                    } else {
+                        // No token provided, save locally only
+                        const data = {
+                            events,
+                            users,
+                            lastUpdated: new Date().toISOString()
+                        };
+                        localStorage.setItem('calendar_backup', JSON.stringify(data));
+                        alert('Data uložena pouze lokálně. Pro synchronizaci mezi zařízeními je potřeba GitHub token.');
+                        return true;
+                    }
+                }
+
+                console.log('Saving data to GitHub...');
                 const data = {
                     events,
                     users,
@@ -1372,19 +1393,78 @@
 
                 console.log('Data to save:', data);
 
-                // For now, save to localStorage as backup
+                // Get current file SHA first
+                const sha = await getFileShaSafe();
+                if (!sha) {
+                    throw new Error('Could not get file SHA');
+                }
+
+                // Update data.json via GitHub API
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/data.json`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: 'Update calendar data via web app',
+                        content: btoa(JSON.stringify(data, null, 2)), // Base64 encode
+                        sha: sha
+                    })
+                });
+
+                if (response.ok) {
+                    console.log('Data saved successfully to GitHub!');
+                    alert('Data uložena a synchronizována! 🎉');
+                    return true;
+                } else {
+                    console.log('GitHub API failed:', response.status);
+
+                    // If unauthorized, clear token
+                    if (response.status === 401 || response.status === 403) {
+                        localStorage.removeItem('github_token');
+                        GITHUB_TOKEN = null;
+                        alert('GitHub token neplatný nebo nemá potřebná oprávnění. Zkus to znovu s novým tokenem.');
+                    }
+
+                    // Fallback to localStorage
+                    localStorage.setItem('calendar_backup', JSON.stringify(data));
+                    alert('GitHub API nedostupné, data uložena lokálně.');
+                    return true;
+                }
+            } catch (error) {
+                console.error('Failed to save data to GitHub:', error);
+
+                // Always save to localStorage as backup
+                const data = {
+                    events,
+                    users,
+                    lastUpdated: new Date().toISOString()
+                };
                 localStorage.setItem('calendar_backup', JSON.stringify(data));
 
-                // TODO: Implement proper GitHub API or webhook for saving
-                console.log('Data backed up to localStorage. Real sync coming soon!');
-
-                // Show user notification
-                alert('Data saved locally. Sync between devices coming soon!');
-
-                return true;
-            } catch (error) {
-                console.error('Failed to save data:', error);
+                alert('Data uložena lokálně jako záloha.');
                 return false;
+            }
+        }
+
+        async function getFileShaSafe() {
+            try {
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/data.json`, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                    }
+                });
+                if (response.ok) {
+                    const fileData = await response.json();
+                    return fileData.sha;
+                } else {
+                    console.error('Failed to get file SHA:', response.status);
+                    return null;
+                }
+            } catch (error) {
+                console.error('Failed to get file SHA:', error);
+                return null;
             }
         }
 
