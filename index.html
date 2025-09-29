@@ -1321,6 +1321,8 @@
         let events = {};
         let users = {};
         let isDataLoaded = false;
+        let saveQueue = [];
+        let isCurrentlySaving = false;
 
         // GitHub API configuration
         const GITHUB_REPO = 'skibidiandulka/czech-homework-calendar';
@@ -1538,14 +1540,62 @@
 
         // Auto-save functions - save immediately without user interaction
         async function autoSave() {
+            return new Promise((resolve) => {
+                // Add to queue
+                saveQueue.push(resolve);
+
+                // Process queue if not already processing
+                if (!isCurrentlySaving) {
+                    processSaveQueue();
+                }
+            });
+        }
+
+        async function processSaveQueue() {
+            if (isCurrentlySaving || saveQueue.length === 0) {
+                return;
+            }
+
+            isCurrentlySaving = true;
+            console.log(`💾 Processing save queue (${saveQueue.length} items)`);
+
+            // Timeout backup - if save takes too long, resolve anyway
+            const timeoutId = setTimeout(() => {
+                console.log('⏰ Save timeout - resolving queue anyway');
+                const resolvers = [...saveQueue];
+                saveQueue = [];
+                resolvers.forEach(resolve => resolve());
+                isCurrentlySaving = false;
+            }, 90000); // 90 seconds timeout
+
             try {
                 const success = await saveDataToDatabase();
+                clearTimeout(timeoutId);
+
                 if (success) {
                     // Reload fresh data from GitHub after successful save
                     await loadDataFromDatabase();
                 }
+
+                // Resolve all queued saves
+                const resolvers = [...saveQueue];
+                saveQueue = [];
+                resolvers.forEach(resolve => resolve());
+
             } catch (error) {
-                console.log('Auto-save failed, data saved locally as backup');
+                clearTimeout(timeoutId);
+                console.log('Save queue failed, data saved locally as backup');
+                // Still resolve the promises
+                const resolvers = [...saveQueue];
+                saveQueue = [];
+                resolvers.forEach(resolve => resolve());
+            }
+
+            isCurrentlySaving = false;
+
+            // Process next batch if queue has more items
+            if (saveQueue.length > 0) {
+                setTimeout(() => processSaveQueue(), 500); // Small delay between batches
             }
         }
 
