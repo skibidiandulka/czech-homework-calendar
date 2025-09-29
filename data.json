@@ -96,7 +96,7 @@
     "Adam": {
       "password": "Roth",
       "name": "Adam",
-      "tier": "blocked"
+      "tier": "basic"
     },
     "user": {
       "password": "user",
@@ -107,12 +107,7 @@
       "password": "asdf",
       "name": "Margareta",
       "tier": "basic"
-    },
-    "sdad": {
-      "password": "asdf",
-      "name": "Sdad",
-      "tier": "basic"
     }
   },
-  "lastUpdated": "2025-09-29T20:02:18.977Z"
+  "lastUpdated": "2025-09-29T20:07:00.055Z"
 }
