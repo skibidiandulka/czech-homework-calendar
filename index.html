@@ -1599,6 +1599,9 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
+            // Debug: Show available event keys
+            console.log('🗓️ Available event keys:', Object.keys(events));
+
             let html = '';
 
             // Day headers
@@ -1625,6 +1628,15 @@
 
                 const dateStr = formatDate(date);
                 const dayEvents = events[dateStr] || [];
+
+                // Debug specific dates
+                if (date.getDate() === 29 && date.getMonth() === 8) { // 29. září
+                    console.log(`🗓️ Looking for events on 29.9: formatDate(${date}) = "${dateStr}", found ${dayEvents.length} events`);
+                }
+                if (date.getDate() === 30 && date.getMonth() === 8) { // 30. září
+                    console.log(`🗓️ Looking for events on 30.9: formatDate(${date}) = "${dateStr}", found ${dayEvents.length} events`);
+                }
+
                 dayEvents.forEach(event => {
                     const displayName = event.subject ? `${event.subject} - ${event.name}` : event.name;
                     html += `<div class="event-item ${event.type}" onclick="showEventDetail('${event.id}')">${displayName}</div>`;
@@ -1903,7 +1915,7 @@
                         </div>
                     ` : ''}
                     <div style="margin-bottom: 16px;">
-                        <strong>Datum:</strong> ${new Date(event.date).toLocaleDateString('cs-CZ')}
+                        <strong>Datum:</strong> ${event.date}
                     </div>
                     ${event.description ? `
                         <div style="margin-bottom: 16px;">
@@ -1985,13 +1997,10 @@
         }
 
         function formatDate(date) {
-            // Fix: Subtract one day to correct the display offset
-            const correctedDate = new Date(date);
-            correctedDate.setDate(correctedDate.getDate() - 1);
-
-            const year = correctedDate.getFullYear();
-            const month = String(correctedDate.getMonth() + 1).padStart(2, '0');
-            const day = String(correctedDate.getDate()).padStart(2, '0');
+            // Use local timezone instead of UTC to avoid date offset issues
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
 
