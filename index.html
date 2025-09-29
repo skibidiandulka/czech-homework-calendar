@@ -1454,7 +1454,7 @@
                     },
                     body: JSON.stringify({
                         message: 'Auto-sync calendar data',
-                        content: btoa(JSON.stringify(data, null, 2)), // Base64 encode
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2)))), // UTF-8 safe Base64 encode
                         sha: sha
                     })
                 });
