@@ -1589,9 +1589,6 @@
 
         // Desktop calendar renderer
         function renderDesktopCalendar() {
-            // Debug: Log all event keys
-            console.log('🗓️ [Calendar Debug] All event keys:', Object.keys(events));
-
             const grid = document.getElementById('calendarGrid');
 
             // Create calendar grid
@@ -1628,13 +1625,6 @@
 
                 const dateStr = formatDate(date);
                 const dayEvents = events[dateStr] || [];
-
-                // Debug logging for date display issues
-                if (dayEvents.length > 0) {
-                    console.log(`🗓️ [Calendar Debug] Date: ${date.getDate()}.${date.getMonth()+1}, dateStr key: "${dateStr}", events found: ${dayEvents.length}`);
-                    console.log(`🗓️ [Calendar Debug] Events:`, dayEvents.map(e => e.name));
-                }
-
                 dayEvents.forEach(event => {
                     const displayName = event.subject ? `${event.subject} - ${event.name}` : event.name;
                     html += `<div class="event-item ${event.type}" onclick="showEventDetail('${event.id}')">${displayName}</div>`;
@@ -1658,7 +1648,6 @@
             now.setHours(0, 0, 0, 0); // Also normalize now to avoid time issues
             let allDays = [];
 
-            console.log(`📱 [Mobile Calendar Debug] Today: ${today}, Now: ${now}`);
 
             // Add 15 previous days
             for (let i = 15; i >= 1; i--) {
@@ -1741,21 +1730,7 @@
                 const dateStr = formatDate(date);
                 const dayEvents = events[dateStr] || [];
 
-                // Debug events for tomorrow
-                const actualToday = new Date();
-                actualToday.setHours(0, 0, 0, 0);
-                if (date.getTime() === actualToday.getTime() + 24 * 60 * 60 * 1000) {
-                    console.log('Tomorrow events debug:', {
-                        date: dateStr,
-                        dayEvents,
-                        allEvents: events
-                    });
-                }
-
                 if (dayEvents.length > 0) {
-                    // Debug mobile calendar event display
-                    console.log(`📱 [Mobile Debug] Showing ${dayEvents.length} events on ${date.getDate()}.${date.getMonth()+1} (key: "${dateStr}")`);
-
                     html += '<div class="daily-card-events">';
                     dayEvents.forEach(event => {
                         const displayName = event.subject ? `${event.subject} - ${event.name}` : event.name;
@@ -2010,18 +1985,14 @@
         }
 
         function formatDate(date) {
-            // Use local timezone instead of UTC to avoid date offset issues
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const result = `${year}-${month}-${day}`;
+            // Fix: Subtract one day to correct the display offset
+            const correctedDate = new Date(date);
+            correctedDate.setDate(correctedDate.getDate() - 1);
 
-            // Debug logging to track date formatting
-            if (date.getFullYear() === 2025 && (date.getMonth() === 8 || date.getMonth() === 9)) {
-                console.log(`📅 [formatDate Debug] Input: ${date}, Output: "${result}"`);
-            }
-
-            return result;
+            const year = correctedDate.getFullYear();
+            const month = String(correctedDate.getMonth() + 1).padStart(2, '0');
+            const day = String(correctedDate.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         // Navigation functions
