@@ -69,6 +69,19 @@
         "createdBy": "admin",
         "createdAt": "2025-09-29T19:27:19.460Z"
       }
+    ],
+    "2025-10-02": [
+      {
+        "id": "1759174830925",
+        "name": "pero gugugaga",
+        "type": "other",
+        "date": "2025-10-02",
+        "description": "",
+        "subject": null,
+        "file": null,
+        "createdBy": "admin",
+        "createdAt": "2025-09-29T19:40:30.925Z"
+      }
     ]
   },
   "users": {
@@ -93,5 +106,5 @@
       "tier": "basic"
     }
   },
-  "lastUpdated": "2025-09-29T19:30:45.965Z"
+  "lastUpdated": "2025-09-29T19:40:30.925Z"
 }
