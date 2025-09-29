@@ -92,11 +92,17 @@
             right: 0;
         }
 
-        /* Center hamburger on mobile */
+        /* Adjust mobile header layout */
         @media (max-width: 768px) {
+            .calendar-header {
+                position: relative; /* Allow absolute positioning inside */
+            }
+
             .hamburger-container {
-                position: static;
-                margin-left: 16px; /* Space from navigation buttons */
+                position: absolute;
+                top: 50%;
+                right: 16px; /* More to the right */
+                transform: translateY(-50%); /* Center vertically */
             }
         }
 
