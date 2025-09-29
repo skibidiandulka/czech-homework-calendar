@@ -48,15 +48,15 @@
     ],
     "2025-09-30": [
       {
-        "id": "1759173929296",
-        "name": "adfasdf",
+        "id": "1759174039460",
+        "name": "Matika",
         "type": "homework",
         "date": "2025-09-30",
         "description": "",
-        "subject": "ŠPJ",
+        "subject": "ESW",
         "file": null,
         "createdBy": "admin",
-        "createdAt": "2025-09-29T19:25:29.296Z"
+        "createdAt": "2025-09-29T19:27:19.460Z"
       }
     ]
   },
@@ -82,5 +82,5 @@
       "tier": "basic"
     }
   },
-  "lastUpdated": "2025-09-29T19:25:29.297Z"
+  "lastUpdated": "2025-09-29T19:27:19.460Z"
 }
