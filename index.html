@@ -2124,11 +2124,11 @@
 
             document.getElementById('eventModal').classList.add('show');
 
-            // Set date constraints and default value
+            // Set date constraints and default value (use local timezone)
             const today = new Date();
-            const todayStr = today.toISOString().split('T')[0];
+            const todayStr = formatDate(today); // Use local timezone formatting
             const maxDate = new Date(today.getFullYear() + 5, today.getMonth(), today.getDate());
-            const maxDateStr = maxDate.toISOString().split('T')[0];
+            const maxDateStr = formatDate(maxDate); // Use local timezone formatting
 
             const dateInput = document.getElementById('eventDate');
             dateInput.min = todayStr;
