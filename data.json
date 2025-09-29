@@ -69,19 +69,6 @@
         "createdBy": "admin",
         "createdAt": "2025-09-29T19:27:19.460Z"
       }
-    ],
-    "2025-10-02": [
-      {
-        "id": "1759174830925",
-        "name": "pero gugugaga",
-        "type": "other",
-        "date": "2025-10-02",
-        "description": "",
-        "subject": null,
-        "file": null,
-        "createdBy": "admin",
-        "createdAt": "2025-09-29T19:40:30.925Z"
-      }
     ]
   },
   "users": {
@@ -104,7 +91,12 @@
       "password": "user",
       "name": "User",
       "tier": "basic"
+    },
+    "Margareta": {
+      "password": "Kincikova",
+      "name": "Margareta",
+      "tier": "basic"
     }
   },
-  "lastUpdated": "2025-09-29T19:40:30.925Z"
+  "lastUpdated": "2025-09-29T19:41:14.259Z"
 }
