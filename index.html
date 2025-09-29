@@ -1589,6 +1589,9 @@
 
         // Desktop calendar renderer
         function renderDesktopCalendar() {
+            // Debug: Log all event keys
+            console.log('🗓️ [Calendar Debug] All event keys:', Object.keys(events));
+
             const grid = document.getElementById('calendarGrid');
 
             // Create calendar grid
@@ -1625,6 +1628,13 @@
 
                 const dateStr = formatDate(date);
                 const dayEvents = events[dateStr] || [];
+
+                // Debug logging for date display issues
+                if (dayEvents.length > 0) {
+                    console.log(`🗓️ [Calendar Debug] Date: ${date.getDate()}.${date.getMonth()+1}, dateStr key: "${dateStr}", events found: ${dayEvents.length}`);
+                    console.log(`🗓️ [Calendar Debug] Events:`, dayEvents.map(e => e.name));
+                }
+
                 dayEvents.forEach(event => {
                     const displayName = event.subject ? `${event.subject} - ${event.name}` : event.name;
                     html += `<div class="event-item ${event.type}" onclick="showEventDetail('${event.id}')">${displayName}</div>`;
@@ -1998,7 +2008,14 @@
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+            const result = `${year}-${month}-${day}`;
+
+            // Debug logging to track date formatting
+            if (date.getFullYear() === 2025 && (date.getMonth() === 8 || date.getMonth() === 9)) {
+                console.log(`📅 [formatDate Debug] Input: ${date}, Output: "${result}"`);
+            }
+
+            return result;
         }
 
         // Navigation functions
