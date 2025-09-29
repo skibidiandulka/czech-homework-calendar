@@ -1958,7 +1958,7 @@
             closeModal('eventDetailModal');
         }
 
-        function deleteEvent(eventId) {
+        async function deleteEvent(eventId) {
             if (!confirm('Opravdu chcete smazat tuto událost?')) {
                 return;
             }
@@ -1976,8 +1976,8 @@
                 }
             }
 
-            saveEvents();
-            renderCalendar();
+            await autoSave(); // Wait for save to complete
+            renderCalendar(); // Re-render after save is done
             closeEventDetailModal();
         }
 
@@ -2060,7 +2060,7 @@
             closeModal('addUserModal');
         }
 
-        function handleAddUser(event) {
+        async function handleAddUser(event) {
             event.preventDefault();
 
             const username = document.getElementById('newUsername').value;
@@ -2077,7 +2077,7 @@
                 tier: 'basic'
             };
 
-            saveUsers();
+            await autoSave(); // Wait for save to complete
             renderUserList(); // Refresh user list to show new user
             closeAddUserModal();
 
@@ -2183,8 +2183,8 @@
             }
 
             events[date].push(newEvent);
-            saveEvents();
-            renderCalendar();
+            await autoSave(); // Wait for save to complete
+            renderCalendar(); // Re-render after save is done
             closeEventModal();
 
             return false;
@@ -2271,15 +2271,15 @@
             });
         }
 
-        function changeUserTier(username, newTier) {
+        async function changeUserTier(username, newTier) {
             if (username === 'admin' && newTier === 'basic') {
                 alert('Hlavního admina nelze degradovat');
                 return;
             }
 
             users[username].tier = newTier;
-            saveUsers();
-            renderUserList();
+            await autoSave(); // Wait for save to complete
+            renderUserList(); // Re-render after save is done
 
             // If the current user's tier was changed, update their menu
             if (currentUser && currentUser.username === username) {
