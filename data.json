@@ -107,7 +107,12 @@
       "password": "asdf",
       "name": "Margareta",
       "tier": "basic"
+    },
+    "Vit": {
+      "password": "sedlacek",
+      "name": "Vit",
+      "tier": "basic"
     }
   },
-  "lastUpdated": "2025-09-29T20:07:00.055Z"
+  "lastUpdated": "2025-09-29T20:50:26.577Z"
 }
