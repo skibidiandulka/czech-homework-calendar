@@ -1857,28 +1857,8 @@
                         return;
                     }
 
-                    // Check if header is visible first - iPhone compatible method
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    const headerRect = header.getBoundingClientRect();
-                    const isHeaderVisible = headerRect.bottom > 0;
-
-                    // Debug for iPhone
-                    if (Math.random() < 0.01) { // Log only occasionally to avoid spam
-                        console.log('Header visibility:', {
-                            scrollTop,
-                            headerBottom: headerRect.bottom,
-                            isHeaderVisible
-                        });
-                    }
-
-                    // If header is not visible, hide the today button
-                    if (!isHeaderVisible) {
-                        todayButton.classList.remove('show', 'direction-up', 'direction-down');
-                        ticking = false;
-                        return;
-                    }
-
-                    // Header is visible, now check today card visibility
+                    // Always show today button when today card is not visible
+                    // Removed header visibility check - button works regardless of header
                     const viewportHeight = window.innerHeight;
                     const cardOffsetTop = todayCard.offsetTop;
                     const cardHeight = todayCard.offsetHeight;
@@ -1894,7 +1874,7 @@
                         // Today is visible - hide button
                         todayButton.classList.remove('show', 'direction-up', 'direction-down');
                     } else {
-                        // Today is not visible but header is visible - show button
+                        // Today is not visible - show button
                         todayButton.classList.add('show');
                         todayButton.classList.remove('direction-up', 'direction-down');
 
