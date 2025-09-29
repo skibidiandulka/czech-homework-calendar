@@ -1627,6 +1627,10 @@
                 const dateStr = formatDate(date);
                 const dayEvents = events[dateStr] || [];
 
+                // Debug when we find events in desktop calendar
+                if (dayEvents.length > 0) {
+                    console.log(`📅 Desktop: Found ${dayEvents.length} events for ${date.getDate()}.${date.getMonth()+1} using key "${dateStr}"`);
+                }
 
                 dayEvents.forEach(event => {
                     const displayName = event.subject ? `${event.subject} - ${event.name}` : event.name;
@@ -1988,13 +1992,9 @@
         }
 
         function formatDate(date) {
-            // Add one day to correct timezone display offset
-            const correctedDate = new Date(date);
-            correctedDate.setDate(correctedDate.getDate() + 1);
-
-            const year = correctedDate.getFullYear();
-            const month = String(correctedDate.getMonth() + 1).padStart(2, '0');
-            const day = String(correctedDate.getDate()).padStart(2, '0');
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
 
@@ -2188,6 +2188,11 @@
             }
 
             events[date].push(newEvent);
+
+            // Debug what we just saved
+            console.log(`💾 Saved event under key: "${date}"`);
+            console.log(`💾 Available keys after save:`, Object.keys(events));
+
             await autoSave(); // Wait for save to complete
             renderCalendar(); // Re-render after save is done
             closeEventModal();
