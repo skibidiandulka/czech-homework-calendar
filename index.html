@@ -74,20 +74,23 @@
         /* Mobile sticky header with smart behavior */
         @media (max-width: 768px) {
             .calendar-header {
-                position: sticky;
-                top: 0;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
                 z-index: 100;
                 background: var(--anthropic-bg);
                 margin-bottom: 0;
                 padding: 16px 8px;
-                border-bottom: 1px solid var(--anthropic-border-light);
-                box-shadow: 0 2px 8px var(--anthropic-shadow);
+                border-top: 1px solid var(--anthropic-border-light);
+                box-shadow: 0 -2px 8px var(--anthropic-shadow);
                 transition: transform 0.3s ease;
             }
 
 
             .calendar-mobile {
                 padding-top: 20px;
+                padding-bottom: 80px; /* Space for fixed header at bottom */
             }
         }
 
@@ -1857,8 +1860,28 @@
                         return;
                     }
 
-                    // Always show today button when today card is not visible
-                    // Removed header visibility check - button works regardless of header
+                    // Check if header is visible first - iPhone compatible method
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const headerRect = header.getBoundingClientRect();
+                    const isHeaderVisible = headerRect.bottom > 0;
+
+                    // Debug for iPhone
+                    if (Math.random() < 0.01) { // Log only occasionally to avoid spam
+                        console.log('Header visibility:', {
+                            scrollTop,
+                            headerBottom: headerRect.bottom,
+                            isHeaderVisible
+                        });
+                    }
+
+                    // If header is not visible, hide the today button
+                    if (!isHeaderVisible) {
+                        todayButton.classList.remove('show', 'direction-up', 'direction-down');
+                        ticking = false;
+                        return;
+                    }
+
+                    // Header is visible, now check today card visibility
                     const viewportHeight = window.innerHeight;
                     const cardOffsetTop = todayCard.offsetTop;
                     const cardHeight = todayCard.offsetHeight;
@@ -1874,7 +1897,7 @@
                         // Today is visible - hide button
                         todayButton.classList.remove('show', 'direction-up', 'direction-down');
                     } else {
-                        // Today is not visible - show button
+                        // Today is not visible but header is visible - show button
                         todayButton.classList.add('show');
                         todayButton.classList.remove('direction-up', 'direction-down');
 
