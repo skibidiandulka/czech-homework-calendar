@@ -1539,7 +1539,11 @@
         // Auto-save functions - save immediately without user interaction
         async function autoSave() {
             try {
-                await saveDataToDatabase();
+                const success = await saveDataToDatabase();
+                if (success) {
+                    // Reload fresh data from GitHub after successful save
+                    await loadDataFromDatabase();
+                }
             } catch (error) {
                 console.log('Auto-save failed, data saved locally as backup');
             }
@@ -1990,7 +1994,11 @@
         }
 
         function formatDate(date) {
-            return date.toISOString().split('T')[0];
+            // Use local timezone instead of UTC to avoid date offset issues
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         // Navigation functions
