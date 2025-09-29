@@ -914,14 +914,6 @@
             box-shadow: 0 8px 32px var(--anthropic-shadow-strong);
         }
 
-        .today-button.direction-up::before {
-            content: '↑';
-        }
-
-        .today-button.direction-down::before {
-            content: '↓';
-        }
-
         /* Responsive Design */
         @media (max-width: 1200px) {
             .calendar-day {
@@ -1732,7 +1724,7 @@
             }
 
             renderAllDays(container, allDays, today);
-            setupSmartHeaderBehavior(today);
+            setupSimpleTodayButton();
 
             // Scroll to today after rendering
             setTimeout(() => {
@@ -1798,123 +1790,47 @@
         // Make scrollToToday globally available
         window.scrollToToday = scrollToToday;
 
-        function setupSmartHeaderBehavior(today) {
-            setupTodayButtonBehavior();
-        }
+        // Simple dumb-proof today button
+        function setupSimpleTodayButton() {
+            const todayButton = document.getElementById('todayButton');
 
-        function scrollToTodayFirst() {
-            const todayCard = document.querySelector('.daily-card.today');
-            if (!todayCard) {
-                alert('Dnešní den nenalezen!');
-                return;
-            }
-
-            // Simple robust scroll - always account for potential header space
-            const offsetTop = todayCard.offsetTop - 100; // 100px buffer for header + padding
-
-            window.scrollTo({
-                top: Math.max(0, offsetTop),
-                behavior: 'smooth'
+            // Click handler - always works
+            todayButton.addEventListener('click', function() {
+                const todayCard = document.querySelector('.daily-card.today');
+                if (todayCard) {
+                    todayCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             });
 
-            // Force hide button immediately (it will reappear if needed)
-            const todayButton = document.getElementById('todayButton');
-            todayButton.classList.remove('show', 'direction-up', 'direction-down');
-        }
+            // Simple visibility check
+            function checkTodayVisibility() {
+                const todayCard = document.querySelector('.daily-card.today');
+                if (!todayCard) return;
 
-        function setupTodayButtonBehavior() {
-            const todayButton = document.getElementById('todayButton');
-            let ticking = false;
+                const rect = todayCard.getBoundingClientRect();
+                const isVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
 
-            // Add click event listener
-            todayButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                scrollToTodayFirst();
-            });
-
-            function updateTodayButton() {
-                try {
-                    const header = document.querySelector('.calendar-header');
-                    const todayCard = document.querySelector('.daily-card.today');
-
-                    if (!todayCard || !header) {
-                        todayButton.classList.remove('show', 'direction-up', 'direction-down');
-                        ticking = false;
-                        return;
-                    }
-
-                    // Check if header is visible first - iPhone compatible method
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    const headerRect = header.getBoundingClientRect();
-                    const isHeaderVisible = headerRect.bottom > 0;
-
-                    // Debug for iPhone
-                    if (Math.random() < 0.01) { // Log only occasionally to avoid spam
-                        console.log('Header visibility:', {
-                            scrollTop,
-                            headerBottom: headerRect.bottom,
-                            isHeaderVisible
-                        });
-                    }
-
-                    // If header is not visible, hide the today button
-                    if (!isHeaderVisible) {
-                        todayButton.classList.remove('show', 'direction-up', 'direction-down');
-                        ticking = false;
-                        return;
-                    }
-
-                    // Header is visible, now check today card visibility
-                    const viewportHeight = window.innerHeight;
-                    const cardOffsetTop = todayCard.offsetTop;
-                    const cardHeight = todayCard.offsetHeight;
-
-                    // Calculate visible area
-                    const cardScreenTop = cardOffsetTop - scrollTop;
-                    const cardScreenBottom = cardScreenTop + cardHeight;
-
-                    // Simple visibility check
-                    const isVisible = cardScreenTop < viewportHeight && cardScreenBottom > 0;
-
-                    if (isVisible) {
-                        // Today is visible - hide button
-                        todayButton.classList.remove('show', 'direction-up', 'direction-down');
+                if (isVisible) {
+                    todayButton.classList.remove('show');
+                } else {
+                    todayButton.classList.add('show');
+                    // Set arrow direction
+                    if (rect.top > window.innerHeight) {
+                        todayButton.innerHTML = '↓';
                     } else {
-                        // Today is not visible but header is visible - show button
-                        todayButton.classList.add('show');
-                        todayButton.classList.remove('direction-up', 'direction-down');
-
-                        if (cardScreenBottom <= 0) {
-                            // Today is above screen
-                            todayButton.classList.add('direction-up');
-                        } else {
-                            // Today is below screen
-                            todayButton.classList.add('direction-down');
-                        }
+                        todayButton.innerHTML = '↑';
                     }
-                } catch (e) {
-                    // Fallback - just show button pointing down
-                    todayButton.classList.add('show', 'direction-down');
-                    todayButton.classList.remove('direction-up');
-                }
-
-                ticking = false;
-            }
-
-            function requestTick() {
-                if (!ticking) {
-                    requestAnimationFrame(updateTodayButton);
-                    ticking = true;
                 }
             }
 
-            window.addEventListener('scroll', requestTick, { passive: true });
-            window.addEventListener('resize', requestTick, { passive: true });
+            // Check on scroll and resize
+            window.addEventListener('scroll', checkTodayVisibility, { passive: true });
+            window.addEventListener('resize', checkTodayVisibility, { passive: true });
 
-            // Initial check with delay
-            setTimeout(updateTodayButton, 300);
+            // Initial check
+            setTimeout(checkTodayVisibility, 100);
         }
+
 
         // Event detail functions
         function showEventDetail(eventId) {
