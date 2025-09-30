@@ -52,6 +52,11 @@
             letter-spacing: -0.01em;
         }
 
+        /* Prevent background scrolling when modal is open */
+        body.modal-open {
+            overflow: hidden;
+        }
+
         /* Container */
         .calendar-container {
             max-width: 1400px;
@@ -1918,6 +1923,7 @@
 
             content.innerHTML = html;
             modal.classList.add('show');
+            document.body.classList.add('modal-open');
         }
 
         function closeEventDetailModal() {
@@ -1997,12 +2003,14 @@
         function openLogin() {
             closeMenu();
             document.getElementById('loginModal').classList.add('show');
+            document.body.classList.add('modal-open');
         }
 
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.classList.add('hiding');
             modal.classList.remove('show');
+            document.body.classList.remove('modal-open');
 
             setTimeout(() => {
                 modal.classList.remove('hiding');
@@ -2023,6 +2031,7 @@
         function openAddUserModal() {
             closeMenu();
             document.getElementById('addUserModal').classList.add('show');
+            document.body.classList.add('modal-open');
         }
 
         function closeAddUserModal() {
@@ -2084,6 +2093,7 @@
             }
 
             document.getElementById('eventModal').classList.add('show');
+            document.body.classList.add('modal-open');
 
             // Set date constraints and default value (use local timezone)
             const today = new Date();
@@ -2203,6 +2213,7 @@
             closeMenu();
             renderUserList();
             document.getElementById('manageUsersModal').classList.add('show');
+            document.body.classList.add('modal-open');
         }
 
         function closeManageUsersModal() {
