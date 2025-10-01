@@ -104,6 +104,19 @@
         "createdBy": "admin",
         "createdAt": "2025-10-01T18:27:36.217Z"
       }
+    ],
+    "2025-10-04": [
+      {
+        "id": "1759343925135",
+        "name": "smrduty negr",
+        "type": "test",
+        "date": "2025-10-04",
+        "description": "Vylizte mi prdel",
+        "subject": "MAT",
+        "file": null,
+        "createdBy": "admin",
+        "createdAt": "2025-10-01T18:38:45.135Z"
+      }
     ]
   },
   "users": {
@@ -138,5 +151,5 @@
       "tier": "admin"
     }
   },
-  "lastUpdated": "2025-10-01T18:27:36.218Z"
+  "lastUpdated": "2025-10-01T18:38:45.135Z"
 }
