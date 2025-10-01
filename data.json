@@ -120,21 +120,15 @@
     ],
     "2025-10-02": [
       {
-        "id": "1759345155486",
-        "name": "test",
-        "type": "homework",
+        "id": "1759345296544",
+        "name": "test1",
+        "type": "other",
         "date": "2025-10-02",
-        "description": "",
-        "subject": "UaK",
-        "file": {
-          "name": "2798069.png",
-          "type": "image/png",
-          "size": 19267,
-          "githubPath": "attachments/1759345155486_2798069.png",
-          "downloadUrl": "https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/attachments/1759345155486_2798069.png"
-        },
+        "description": "dfhdfh",
+        "subject": null,
+        "file": null,
         "createdBy": "admin",
-        "createdAt": "2025-10-01T18:59:16.296Z"
+        "createdAt": "2025-10-01T19:01:36.544Z"
       }
     ]
   },
@@ -170,5 +164,5 @@
       "tier": "admin"
     }
   },
-  "lastUpdated": "2025-10-01T18:59:16.296Z"
+  "lastUpdated": "2025-10-01T19:01:36.544Z"
 }
