@@ -1275,13 +1275,13 @@
                     <textarea id="eventDescription" class="form-input" rows="3" placeholder="Volitelný popis události..."></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Příloha</label>
+                    <label class="form-label">Přílohy</label>
                     <div class="file-upload-area" onclick="document.getElementById('eventFile').click()" ondrop="handleFileDrop(event)" ondragover="handleDragOver(event)">
-                        <div class="file-upload-text">Klikněte nebo přetáhněte soubor</div>
+                        <div class="file-upload-text">Klikněte nebo přetáhněte soubory</div>
                         <div class="file-upload-text" style="font-size: 12px; margin-top: 4px;">Podporované: obrázky, PDF, DOCX, PPTX</div>
-                        <div id="fileSelectedInfo" class="file-selected" style="display: none;"></div>
                     </div>
-                    <input type="file" id="eventFile" style="display: none;" accept="image/*,.pdf,.docx,.pptx" onchange="handleFileSelect(event)">
+                    <input type="file" id="eventFile" style="display: none;" accept="image/*,.pdf,.docx,.pptx" onchange="handleFileSelect(event)" multiple>
+                    <div id="filesList" style="margin-top: 12px;"></div>
                 </div>
                 <div style="font-size: 12px; color: var(--anthropic-text-secondary); margin-bottom: 16px; text-align: center;">
                     ⏱️ Událost se zobrazí v kalendáři za 2-5 minut kvůli synchronizaci
@@ -1314,10 +1314,10 @@
         let currentDate = new Date();
         let currentUser = null;
         let currentEventType = null;
-        let selectedFile = null;
+        let selectedFiles = []; // Changed to array for multiple files
         let isEditMode = false;
         let editingEventId = null;
-        let existingFile = null;
+        let existingFiles = []; // Changed to array for multiple files
 
         // GitHub shared data storage
         let events = {};
@@ -1890,17 +1890,19 @@
                             </div>
                         </div>
                     ` : ''}
-                    ${event.file ? `
+                    ${event.files && event.files.length > 0 ? `
                         <div style="margin-bottom: 16px;">
-                            <strong>Příloha:</strong><br>
-                            <div style="margin-top: 8px;">
-                                <a href="${event.file.downloadUrl || event.file.data}" download="${event.file.name}"
-                                   target="_blank" rel="noopener noreferrer"
-                                   style="display: inline-block; padding: 8px 12px; background: var(--anthropic-coral-light);
-                                          color: var(--anthropic-coral); text-decoration: none; border-radius: var(--small-radius);
-                                          font-weight: 500;">
-                                    📎 ${event.file.name}
-                                </a>
+                            <strong>Přílohy (${event.files.length}):</strong><br>
+                            <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 8px;">
+                                ${event.files.map(file => `
+                                    <a href="${file.downloadUrl || file.data}" download="${file.name}"
+                                       target="_blank" rel="noopener noreferrer"
+                                       style="display: inline-block; padding: 8px 12px; background: var(--anthropic-coral-light);
+                                              color: var(--anthropic-coral); text-decoration: none; border-radius: var(--small-radius);
+                                              font-weight: 500;">
+                                        📎 ${file.name}
+                                    </a>
+                                `).join('')}
                             </div>
                         </div>
                     ` : ''}
@@ -1999,11 +2001,10 @@
             document.getElementById('eventDescription').value = event.description || '';
             document.getElementById('eventSubject').value = event.subject || '';
 
-            // Show existing file if present
-            if (event.file) {
-                document.getElementById('fileSelectedInfo').textContent = `Aktuální soubor: ${event.file.name}`;
-                document.getElementById('fileSelectedInfo').style.display = 'block';
-                existingFile = event.file;
+            // Show existing files if present
+            if (event.files && event.files.length > 0) {
+                existingFiles = event.files.map(f => ({...f, id: f.id || (f.name + '_' + Date.now())}));
+                renderFilesList();
             }
 
             // Set date constraints
@@ -2185,11 +2186,11 @@
             document.getElementById('eventDescription').value = '';
             document.getElementById('eventSubject').value = '';
             document.getElementById('eventFile').value = '';
-            document.getElementById('fileSelectedInfo').style.display = 'none';
-            selectedFile = null;
+            selectedFiles = [];
+            existingFiles = [];
             isEditMode = false;
             editingEventId = null;
-            existingFile = null;
+            renderFilesList();
         }
 
         async function handleAddEvent(event) {
@@ -2206,18 +2207,21 @@
             } else {
                 // Create new event
                 const eventId = Date.now().toString();
-                let fileAttachment = null;
+                let fileAttachments = [];
 
-                // Upload file to GitHub if selected
-                if (selectedFile) {
-                    console.log('📎 Uploading attachment...');
-                    fileAttachment = await saveFileToGitHub(selectedFile, eventId);
-                    if (fileAttachment) {
-                        console.log('✅ Attachment uploaded successfully');
-                    } else {
-                        console.log('⚠️ Attachment upload failed');
-                        alert('Nahrání souboru selhalo. Zkus to prosím znovu nebo přidej událost bez souboru.');
-                        return; // Don't save event if file upload fails
+                // Upload files to GitHub if selected
+                if (selectedFiles.length > 0) {
+                    console.log(`📎 Uploading ${selectedFiles.length} attachment(s)...`);
+                    for (const file of selectedFiles) {
+                        const uploaded = await saveFileToGitHub(file, eventId);
+                        if (uploaded) {
+                            fileAttachments.push(uploaded);
+                            console.log('✅ Attachment uploaded:', uploaded.name);
+                        } else {
+                            console.log('⚠️ Attachment upload failed:', file.name);
+                            alert(`Nahrání souboru "${file.name}" selhalo. Zkus to prosím znovu.`);
+                            return; // Don't save event if any file upload fails
+                        }
                     }
                 }
 
@@ -2228,7 +2232,7 @@
                     date: date,
                     description: description,
                     subject: subject || null,
-                    file: fileAttachment,
+                    files: fileAttachments,
                     createdBy: currentUser.username,
                     createdAt: new Date().toISOString()
                 };
@@ -2263,18 +2267,22 @@
 
             if (!eventToEdit) return;
 
-            // Handle file upload if new file selected
-            let fileAttachment = existingFile; // Keep existing file by default
+            // Combine existing files (not removed) with newly selected files
+            let allFiles = [...existingFiles];
 
-            if (selectedFile) {
-                console.log('📎 Uploading new attachment...');
-                fileAttachment = await saveFileToGitHub(selectedFile, editingEventId);
-                if (fileAttachment) {
-                    console.log('✅ New attachment uploaded successfully');
-                } else {
-                    console.log('⚠️ Attachment upload failed');
-                    alert('Nahrání souboru selhalo. Zkus to prosím znovu.');
-                    return;
+            // Upload new files if selected
+            if (selectedFiles.length > 0) {
+                console.log(`📎 Uploading ${selectedFiles.length} new attachment(s)...`);
+                for (const file of selectedFiles) {
+                    const uploaded = await saveFileToGitHub(file, editingEventId);
+                    if (uploaded) {
+                        allFiles.push(uploaded);
+                        console.log('✅ New attachment uploaded:', uploaded.name);
+                    } else {
+                        console.log('⚠️ Attachment upload failed:', file.name);
+                        alert(`Nahrání souboru "${file.name}" selhalo. Zkus to prosím znovu.`);
+                        return;
+                    }
                 }
             }
 
@@ -2283,7 +2291,7 @@
             eventToEdit.date = date;
             eventToEdit.description = description;
             eventToEdit.subject = subject || null;
-            eventToEdit.file = fileAttachment;
+            eventToEdit.files = allFiles;
 
             // If date changed, move event to new date
             if (oldDate !== date) {
@@ -2306,21 +2314,83 @@
 
         // File handling functions
         function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    selectedFile = {
-                        name: file.name,
-                        type: file.type,
-                        size: file.size,
-                        data: e.target.result
+            const files = event.target.files;
+            if (files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        selectedFiles.push({
+                            name: file.name,
+                            type: file.type,
+                            size: file.size,
+                            data: e.target.result,
+                            id: Date.now() + '_' + i // Unique ID for removal
+                        });
+                        renderFilesList();
                     };
-                    document.getElementById('fileSelectedInfo').textContent = `Soubor: ${file.name}`;
-                    document.getElementById('fileSelectedInfo').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
+                    reader.readAsDataURL(file);
+                }
             }
+            // Reset input so same file can be added again
+            event.target.value = '';
+        }
+
+        function removeFile(fileId, isExisting) {
+            if (isExisting) {
+                existingFiles = existingFiles.filter(f => f.id !== fileId);
+            } else {
+                selectedFiles = selectedFiles.filter(f => f.id !== fileId);
+            }
+            renderFilesList();
+        }
+
+        function renderFilesList() {
+            const filesList = document.getElementById('filesList');
+            let html = '';
+
+            // Show existing files (when editing)
+            existingFiles.forEach(file => {
+                html += `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px;
+                                background: var(--anthropic-warm-white); border-radius: var(--small-radius); margin-bottom: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+                            <span style="font-size: 16px;">📎</span>
+                            <span style="font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
+                            <span style="font-size: 11px; color: var(--anthropic-text-secondary);">(existující)</span>
+                        </div>
+                        <button type="button" onclick="removeFile('${file.id}', true)"
+                                style="padding: 4px 8px; background: rgba(220, 53, 69, 0.1); color: #dc3545;
+                                       border: 1px solid rgba(220, 53, 69, 0.3); border-radius: 4px;
+                                       cursor: pointer; font-size: 12px; flex-shrink: 0;">
+                            Odebrat
+                        </button>
+                    </div>
+                `;
+            });
+
+            // Show newly selected files
+            selectedFiles.forEach(file => {
+                const sizeKB = (file.size / 1024).toFixed(1);
+                html += `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px;
+                                background: var(--anthropic-coral-light); border-radius: var(--small-radius); margin-bottom: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+                            <span style="font-size: 16px;">📎</span>
+                            <span style="font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
+                            <span style="font-size: 11px; color: var(--anthropic-text-secondary);">(${sizeKB} KB)</span>
+                        </div>
+                        <button type="button" onclick="removeFile('${file.id}', false)"
+                                style="padding: 4px 8px; background: rgba(220, 53, 69, 0.1); color: #dc3545;
+                                       border: 1px solid rgba(220, 53, 69, 0.3); border-radius: 4px;
+                                       cursor: pointer; font-size: 12px; flex-shrink: 0;">
+                            Odebrat
+                        </button>
+                    </div>
+                `;
+            });
+
+            filesList.innerHTML = html;
         }
 
         function handleDragOver(event) {
@@ -2334,10 +2404,9 @@
 
             const files = event.dataTransfer.files;
             if (files.length > 0) {
-                const file = files[0];
                 const fileInput = document.getElementById('eventFile');
                 fileInput.files = files;
-                handleFileSelect({ target: { files: [file] } });
+                handleFileSelect({ target: { files: files } });
             }
         }
 
