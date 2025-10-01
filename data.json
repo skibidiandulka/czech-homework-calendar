@@ -77,17 +77,6 @@
         "file": null,
         "createdBy": "Vit",
         "createdAt": "2025-09-30T07:19:28.570Z"
-      },
-      {
-        "id": "1759216769711",
-        "name": "Gangbang",
-        "type": "test",
-        "date": "2025-10-01",
-        "description": "Negr",
-        "subject": "ŠPJ",
-        "file": null,
-        "createdBy": "Vit",
-        "createdAt": "2025-09-30T07:19:29.711Z"
       }
     ],
     "2025-09-30": [
@@ -136,5 +125,5 @@
       "tier": "admin"
     }
   },
-  "lastUpdated": "2025-09-30T10:07:10.282Z"
+  "lastUpdated": "2025-10-01T18:03:01.103Z"
 }
