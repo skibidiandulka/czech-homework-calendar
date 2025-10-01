@@ -2139,8 +2139,9 @@
                 if (fileAttachment) {
                     console.log('✅ Attachment uploaded successfully');
                 } else {
-                    console.log('⚠️ Attachment upload failed, saving file data locally');
-                    fileAttachment = selectedFile; // Keep local copy as fallback
+                    console.log('⚠️ Attachment upload failed');
+                    alert('Nahrání souboru selhalo. Zkus to prosím znovu nebo přidej událost bez souboru.');
+                    return; // Don't save event if file upload fails
                 }
             }
 
@@ -2344,6 +2345,8 @@
                     <button class="menu-item" onclick="openAddUserModal()">Přidat uživatele</button>
                     <button class="menu-item" onclick="openManageUsersModal()">Správa uživatelů</button>
                     <div class="menu-separator"></div>
+                    <button class="menu-item" onclick="manualRefresh()">🔄 Aktualizovat data</button>
+                    <div class="menu-separator"></div>
                     <button class="menu-item logout" onclick="logout()">Odhlásit se</button>
                 `;
             } else { // basic
@@ -2351,6 +2354,8 @@
                     <button class="menu-item" onclick="openEventModal('test')">Přidat test</button>
                     <button class="menu-item" onclick="openEventModal('homework')">Přidat domácí úkol</button>
                     <button class="menu-item" onclick="openEventModal('other')">Přidat jiné</button>
+                    <div class="menu-separator"></div>
+                    <button class="menu-item" onclick="manualRefresh()">🔄 Aktualizovat data</button>
                     <div class="menu-separator"></div>
                     <button class="menu-item logout" onclick="logout()">Odhlásit se</button>
                 `;
@@ -2365,6 +2370,14 @@
             dropdownMenu.innerHTML = '<button class="menu-item" onclick="openLogin()">Přihlásit se</button>';
 
             closeMenu();
+        }
+
+        async function manualRefresh() {
+            closeMenu();
+            console.log('🔄 Manual refresh triggered');
+            await loadDataFromDatabase();
+            renderCalendar();
+            alert('Data aktualizována!');
         }
 
         function checkStoredLogin() {
