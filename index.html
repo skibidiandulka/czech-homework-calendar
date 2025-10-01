@@ -1349,6 +1349,30 @@
 
                 events = data?.events || {};
                 users = data?.users || {};
+
+                // Convert old single file format to new multiple files format (backward compatibility)
+                for (const date in events) {
+                    events[date].forEach(event => {
+                        // If event has old 'file' property (singular), convert to 'files' array
+                        if (event.hasOwnProperty('file') && !event.hasOwnProperty('files')) {
+                            if (event.file && event.file !== null) {
+                                // Add unique ID if missing
+                                if (!event.file.id) {
+                                    event.file.id = event.file.name + '_' + Date.now();
+                                }
+                                event.files = [event.file];
+                            } else {
+                                event.files = [];
+                            }
+                            delete event.file; // Remove old property
+                        }
+                        // Ensure files is always an array
+                        if (!event.files) {
+                            event.files = [];
+                        }
+                    });
+                }
+
                 isDataLoaded = true;
 
                 console.log('Data loaded successfully from GitHub:', { events, users });
