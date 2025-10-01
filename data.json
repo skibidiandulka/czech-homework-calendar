@@ -91,6 +91,19 @@
         "createdBy": "admin",
         "createdAt": "2025-09-29T19:27:19.460Z"
       }
+    ],
+    "2025-10-03": [
+      {
+        "id": "1759343256217",
+        "name": "adamek",
+        "type": "homework",
+        "date": "2025-10-03",
+        "description": "",
+        "subject": "CJL",
+        "file": null,
+        "createdBy": "admin",
+        "createdAt": "2025-10-01T18:27:36.217Z"
+      }
     ]
   },
   "users": {
@@ -125,5 +138,5 @@
       "tier": "admin"
     }
   },
-  "lastUpdated": "2025-10-01T18:03:55.769Z"
+  "lastUpdated": "2025-10-01T18:27:36.218Z"
 }
