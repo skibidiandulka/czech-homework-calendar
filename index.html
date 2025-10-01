@@ -1315,6 +1315,9 @@
         let currentUser = null;
         let currentEventType = null;
         let selectedFile = null;
+        let isEditMode = false;
+        let editingEventId = null;
+        let existingFile = null;
 
         // GitHub shared data storage
         let events = {};
@@ -1904,16 +1907,23 @@
                     <div style="font-size: 12px; color: var(--anthropic-text-secondary); margin-top: 20px;">
                         Vytvořil: ${event.createdBy} • ${new Date(event.createdAt).toLocaleString('cs-CZ')}
                     </div>
-                    ${(currentUser && currentUser.tier !== 'blocked' &&
-                       (currentUser.tier === 'admin' || currentUser.username === event.createdBy)) ? `
-                        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--anthropic-border-light); text-align: right;">
+                    ${(currentUser && currentUser.tier !== 'blocked') ? `
+                        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--anthropic-border-light); display: flex; gap: 12px; justify-content: flex-end;">
+                            <button onclick="openEditEvent('${event.id}')"
+                                    style="padding: 8px 16px; background: rgba(255, 136, 0, 0.1); color: #ff8800;
+                                           border: 1px solid rgba(255, 136, 0, 0.3); border-radius: var(--small-radius);
+                                           cursor: pointer; font-weight: 500; transition: all 0.15s ease;"
+                                    onmouseover="this.style.background='rgba(255, 136, 0, 0.2)'"
+                                    onmouseout="this.style.background='rgba(255, 136, 0, 0.1)'">
+                                ✏️ Upravit
+                            </button>
                             <button onclick="deleteEvent('${event.id}')"
                                     style="padding: 8px 16px; background: rgba(220, 53, 69, 0.1); color: #dc3545;
                                            border: 1px solid rgba(220, 53, 69, 0.3); border-radius: var(--small-radius);
                                            cursor: pointer; font-weight: 500; transition: all 0.15s ease;"
                                     onmouseover="this.style.background='rgba(220, 53, 69, 0.2)'"
                                     onmouseout="this.style.background='rgba(220, 53, 69, 0.1)'">
-                                Smazat událost
+                                Smazat
                             </button>
                         </div>
                     ` : ''}
@@ -1950,6 +1960,64 @@
             await autoSave(); // Wait for save to complete
             renderCalendar(); // Re-render after save is done
             closeEventDetailModal();
+        }
+
+        function openEditEvent(eventId) {
+            const event = findEventById(eventId);
+            if (!event) return;
+
+            closeEventDetailModal();
+
+            // Set current event type and open modal
+            currentEventType = event.type;
+            isEditMode = true;
+            editingEventId = eventId;
+
+            const titles = {
+                'test': 'Upravit test',
+                'homework': 'Upravit domácí úkol',
+                'other': 'Upravit jiné'
+            };
+
+            document.getElementById('eventModalTitle').textContent = titles[event.type];
+
+            // Show/hide subject field based on event type
+            const subjectGroup = document.getElementById('subjectGroup');
+            const subjectField = document.getElementById('eventSubject');
+
+            if (event.type === 'homework' || event.type === 'test') {
+                subjectGroup.style.display = 'block';
+                subjectField.required = true;
+            } else {
+                subjectGroup.style.display = 'none';
+                subjectField.required = false;
+            }
+
+            // Pre-fill form with event data
+            document.getElementById('eventName').value = event.name;
+            document.getElementById('eventDate').value = event.date;
+            document.getElementById('eventDescription').value = event.description || '';
+            document.getElementById('eventSubject').value = event.subject || '';
+
+            // Show existing file if present
+            if (event.file) {
+                document.getElementById('fileSelectedInfo').textContent = `Aktuální soubor: ${event.file.name}`;
+                document.getElementById('fileSelectedInfo').style.display = 'block';
+                existingFile = event.file;
+            }
+
+            // Set date constraints
+            const today = new Date();
+            const todayStr = formatDate(today);
+            const maxDate = new Date(today.getFullYear() + 5, today.getMonth(), today.getDate());
+            const maxDateStr = formatDate(maxDate);
+
+            const dateInput = document.getElementById('eventDate');
+            dateInput.min = todayStr;
+            dateInput.max = maxDateStr;
+
+            document.getElementById('eventModal').classList.add('show');
+            document.body.classList.add('modal-open');
         }
 
         function findEventById(eventId) {
@@ -2119,6 +2187,9 @@
             document.getElementById('eventFile').value = '';
             document.getElementById('fileSelectedInfo').style.display = 'none';
             selectedFile = null;
+            isEditMode = false;
+            editingEventId = null;
+            existingFile = null;
         }
 
         async function handleAddEvent(event) {
@@ -2129,46 +2200,108 @@
             const description = document.getElementById('eventDescription').value;
             const subject = document.getElementById('eventSubject').value;
 
-            const eventId = Date.now().toString();
-            let fileAttachment = null;
+            if (isEditMode) {
+                // Edit existing event
+                await handleEditEvent(name, date, description, subject);
+            } else {
+                // Create new event
+                const eventId = Date.now().toString();
+                let fileAttachment = null;
 
-            // Upload file to GitHub if selected
-            if (selectedFile) {
-                console.log('📎 Uploading attachment...');
-                fileAttachment = await saveFileToGitHub(selectedFile, eventId);
-                if (fileAttachment) {
-                    console.log('✅ Attachment uploaded successfully');
-                } else {
-                    console.log('⚠️ Attachment upload failed');
-                    alert('Nahrání souboru selhalo. Zkus to prosím znovu nebo přidej událost bez souboru.');
-                    return; // Don't save event if file upload fails
+                // Upload file to GitHub if selected
+                if (selectedFile) {
+                    console.log('📎 Uploading attachment...');
+                    fileAttachment = await saveFileToGitHub(selectedFile, eventId);
+                    if (fileAttachment) {
+                        console.log('✅ Attachment uploaded successfully');
+                    } else {
+                        console.log('⚠️ Attachment upload failed');
+                        alert('Nahrání souboru selhalo. Zkus to prosím znovu nebo přidej událost bez souboru.');
+                        return; // Don't save event if file upload fails
+                    }
                 }
+
+                const newEvent = {
+                    id: eventId,
+                    name: name,
+                    type: currentEventType,
+                    date: date,
+                    description: description,
+                    subject: subject || null,
+                    file: fileAttachment,
+                    createdBy: currentUser.username,
+                    createdAt: new Date().toISOString()
+                };
+
+                if (!events[date]) {
+                    events[date] = [];
+                }
+
+                events[date].push(newEvent);
             }
-
-            const newEvent = {
-                id: eventId,
-                name: name,
-                type: currentEventType,
-                date: date,
-                description: description,
-                subject: subject || null,
-                file: fileAttachment,
-                createdBy: currentUser.username,
-                createdAt: new Date().toISOString()
-            };
-
-            if (!events[date]) {
-                events[date] = [];
-            }
-
-            events[date].push(newEvent);
-
 
             await autoSave(); // Wait for save to complete
             renderCalendar(); // Re-render after save is done
             closeEventModal();
 
             return false;
+        }
+
+        async function handleEditEvent(name, date, description, subject) {
+            // Find the event
+            let eventToEdit = null;
+            let oldDate = null;
+
+            for (const d in events) {
+                const event = events[d].find(e => e.id === editingEventId);
+                if (event) {
+                    eventToEdit = event;
+                    oldDate = d;
+                    break;
+                }
+            }
+
+            if (!eventToEdit) return;
+
+            // Handle file upload if new file selected
+            let fileAttachment = existingFile; // Keep existing file by default
+
+            if (selectedFile) {
+                console.log('📎 Uploading new attachment...');
+                fileAttachment = await saveFileToGitHub(selectedFile, editingEventId);
+                if (fileAttachment) {
+                    console.log('✅ New attachment uploaded successfully');
+                } else {
+                    console.log('⚠️ Attachment upload failed');
+                    alert('Nahrání souboru selhalo. Zkus to prosím znovu.');
+                    return;
+                }
+            }
+
+            // Update event data
+            eventToEdit.name = name;
+            eventToEdit.date = date;
+            eventToEdit.description = description;
+            eventToEdit.subject = subject || null;
+            eventToEdit.file = fileAttachment;
+
+            // If date changed, move event to new date
+            if (oldDate !== date) {
+                // Remove from old date
+                const oldIndex = events[oldDate].findIndex(e => e.id === editingEventId);
+                if (oldIndex !== -1) {
+                    events[oldDate].splice(oldIndex, 1);
+                    if (events[oldDate].length === 0) {
+                        delete events[oldDate];
+                    }
+                }
+
+                // Add to new date
+                if (!events[date]) {
+                    events[date] = [];
+                }
+                events[date].push(eventToEdit);
+            }
         }
 
         // File handling functions
