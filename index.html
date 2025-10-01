@@ -1891,7 +1891,8 @@
                         <div style="margin-bottom: 16px;">
                             <strong>Příloha:</strong><br>
                             <div style="margin-top: 8px;">
-                                <a href="${event.file.data}" download="${event.file.name}"
+                                <a href="${event.file.downloadUrl || event.file.data}" download="${event.file.name}"
+                                   target="_blank" rel="noopener noreferrer"
                                    style="display: inline-block; padding: 8px 12px; background: var(--anthropic-coral-light);
                                           color: var(--anthropic-coral); text-decoration: none; border-radius: var(--small-radius);
                                           font-weight: 500;">
