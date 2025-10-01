@@ -1571,10 +1571,8 @@
                 const success = await saveDataToDatabase();
                 clearTimeout(timeoutId);
 
-                if (success) {
-                    // Reload fresh data from GitHub after successful save
-                    await loadDataFromDatabase();
-                }
+                // Don't reload - data is already current in memory
+                // User can manually refresh or it will sync on next page load
 
                 // Resolve all queued saves
                 const resolvers = [...saveQueue];
