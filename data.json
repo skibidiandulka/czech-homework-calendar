@@ -194,6 +194,19 @@
         "createdBy": "admin",
         "createdAt": "2025-10-02T15:16:07.392Z"
       }
+    ],
+    "2025-10-06": [
+      {
+        "id": "1759418779673",
+        "name": "test6",
+        "type": "test",
+        "date": "2025-10-06",
+        "description": "",
+        "subject": "ESW",
+        "files": [],
+        "createdBy": "admin",
+        "createdAt": "2025-10-02T15:26:19.673Z"
+      }
     ]
   },
   "users": {
@@ -228,5 +241,5 @@
       "tier": "admin"
     }
   },
-  "lastUpdated": "2025-10-02T15:16:09.090Z"
+  "lastUpdated": "2025-10-02T15:26:19.674Z"
 }
