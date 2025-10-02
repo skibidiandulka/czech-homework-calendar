@@ -2233,17 +2233,23 @@
                 const eventId = Date.now().toString();
                 let fileAttachments = [];
 
-                // Upload files to GitHub if selected
+                // Upload files to GitHub if selected (in parallel for speed)
                 if (selectedFiles.length > 0) {
-                    console.log(`📎 Uploading ${selectedFiles.length} attachment(s)...`);
-                    for (const file of selectedFiles) {
-                        const uploaded = await saveFileToGitHub(file, eventId);
+                    console.log(`📎 Uploading ${selectedFiles.length} attachment(s) in parallel...`);
+
+                    // Upload all files at once in parallel
+                    const uploadPromises = selectedFiles.map(file => saveFileToGitHub(file, eventId));
+                    const uploadResults = await Promise.all(uploadPromises);
+
+                    // Check if all uploads succeeded
+                    for (let i = 0; i < uploadResults.length; i++) {
+                        const uploaded = uploadResults[i];
                         if (uploaded) {
                             fileAttachments.push(uploaded);
                             console.log('✅ Attachment uploaded:', uploaded.name);
                         } else {
-                            console.log('⚠️ Attachment upload failed:', file.name);
-                            alert(`Nahrání souboru "${file.name}" selhalo. Zkus to prosím znovu.`);
+                            console.log('⚠️ Attachment upload failed:', selectedFiles[i].name);
+                            alert(`Nahrání souboru "${selectedFiles[i].name}" selhalo. Zkus to prosím znovu.`);
                             return; // Don't save event if any file upload fails
                         }
                     }
@@ -2294,17 +2300,23 @@
             // Combine existing files (not removed) with newly selected files
             let allFiles = [...existingFiles];
 
-            // Upload new files if selected
+            // Upload new files if selected (in parallel for speed)
             if (selectedFiles.length > 0) {
-                console.log(`📎 Uploading ${selectedFiles.length} new attachment(s)...`);
-                for (const file of selectedFiles) {
-                    const uploaded = await saveFileToGitHub(file, editingEventId);
+                console.log(`📎 Uploading ${selectedFiles.length} new attachment(s) in parallel...`);
+
+                // Upload all files at once in parallel
+                const uploadPromises = selectedFiles.map(file => saveFileToGitHub(file, editingEventId));
+                const uploadResults = await Promise.all(uploadPromises);
+
+                // Check if all uploads succeeded
+                for (let i = 0; i < uploadResults.length; i++) {
+                    const uploaded = uploadResults[i];
                     if (uploaded) {
                         allFiles.push(uploaded);
                         console.log('✅ New attachment uploaded:', uploaded.name);
                     } else {
-                        console.log('⚠️ Attachment upload failed:', file.name);
-                        alert(`Nahrání souboru "${file.name}" selhalo. Zkus to prosím znovu.`);
+                        console.log('⚠️ Attachment upload failed:', selectedFiles[i].name);
+                        alert(`Nahrání souboru "${selectedFiles[i].name}" selhalo. Zkus to prosím znovu.`);
                         return;
                     }
                 }
