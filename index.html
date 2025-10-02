@@ -1580,18 +1580,13 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            // Check if viewing current month
-            const isCurrentMonth = currentDate.getMonth() === today.getMonth() &&
-                                   currentDate.getFullYear() === today.getFullYear();
-
             let html = '';
 
             // Determine start and end day
             const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-            const startDay = isCurrentMonth ? today.getDate() : 1;
 
-            // Render each day in the month vertically (starting from today if current month)
-            for (let day = startDay; day <= lastDay.getDate(); day++) {
+            // Render each day in the month vertically
+            for (let day = 1; day <= lastDay.getDate(); day++) {
                 const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
                 const isToday = date.getTime() === today.getTime();
 
@@ -1667,6 +1662,14 @@
             }
 
             grid.innerHTML = html;
+
+            // Scroll to today's card if in current month
+            setTimeout(() => {
+                const todayCard = document.querySelector('.day-card.today');
+                if (todayCard) {
+                    todayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
         }
 
         // Event detail functions
