@@ -787,6 +787,49 @@
             background: var(--other-light);
         }
 
+        /* Month separator */
+        .month-separator {
+            display: flex;
+            align-items: center;
+            margin: 32px 0 24px 0;
+            gap: 16px;
+        }
+
+        .separator-line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--anthropic-border), transparent);
+        }
+
+        .separator-text {
+            color: var(--anthropic-text-secondary);
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 12px;
+            background: var(--anthropic-bg);
+        }
+
+        /* Next month days styling */
+        .day-card.next-month {
+            opacity: 0.85;
+            background: var(--anthropic-warm-white);
+        }
+
+        .day-card.next-month:hover {
+            opacity: 1;
+            background: var(--anthropic-card-bg);
+        }
+
+        .day-card.next-month .day-card-number {
+            color: var(--anthropic-text-secondary);
+        }
+
+        .day-card.next-month .day-card-name {
+            color: var(--anthropic-text-muted);
+        }
+
         /* Responsive Design */
         /* Mobile optimizations */
         @media (max-width: 768px) {
@@ -841,6 +884,16 @@
             .event-item {
                 padding: 8px 12px;
                 font-size: 13px;
+            }
+
+            .month-separator {
+                margin: 24px 0 16px 0;
+                gap: 12px;
+            }
+
+            .separator-text {
+                font-size: 14px;
+                padding: 0 8px;
             }
 
             /* Modal adjustments for mobile */
@@ -915,6 +968,16 @@
             .event-item {
                 padding: 6px 10px;
                 font-size: 12px;
+            }
+
+            .month-separator {
+                margin: 20px 0 12px 0;
+                gap: 10px;
+            }
+
+            .separator-text {
+                font-size: 12px;
+                padding: 0 6px;
             }
 
             .modal {
@@ -1532,6 +1595,49 @@
                 const dayEvents = events[dateStr] || [];
 
                 html += `<div class="day-card ${isToday ? 'today' : ''}">`;
+                html += '<div class="day-card-header">';
+                html += '<div class="day-card-info">';
+                html += `<div class="day-card-number">${day}</div>`;
+                html += `<div class="day-card-name">${dayNames[date.getDay()]}</div>`;
+                html += '</div>';
+                if (isToday) {
+                    html += '<div class="day-card-badge">Dnes</div>';
+                }
+                html += '</div>';
+
+                if (dayEvents.length > 0) {
+                    html += '<div class="day-card-events">';
+                    dayEvents.forEach(event => {
+                        const displayName = event.subject ? `${event.subject} - ${event.name}` : event.name;
+                        html += `<div class="event-item ${event.type}" onclick="showEventDetail('${event.id}')">${displayName}</div>`;
+                    });
+                    html += '</div>';
+                } else {
+                    html += '<div class="day-card-empty">Žádné události</div>';
+                }
+
+                html += '</div>';
+            }
+
+            // Add separator and next 7 days from next month
+            const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+            const nextMonthName = monthNames[nextMonth.getMonth()];
+
+            html += `<div class="month-separator">`;
+            html += `<div class="separator-line"></div>`;
+            html += `<div class="separator-text">${nextMonthName}</div>`;
+            html += `<div class="separator-line"></div>`;
+            html += `</div>`;
+
+            // Render first 7 days of next month
+            for (let day = 1; day <= 7; day++) {
+                const date = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), day);
+                const isToday = date.getTime() === today.getTime();
+
+                const dateStr = formatDate(date);
+                const dayEvents = events[dateStr] || [];
+
+                html += `<div class="day-card next-month ${isToday ? 'today' : ''}">`;
                 html += '<div class="day-card-header">';
                 html += '<div class="day-card-info">';
                 html += `<div class="day-card-number">${day}</div>`;
