@@ -57,12 +57,17 @@
             overflow: hidden;
         }
 
+        body, html {
+            overflow-x: hidden;
+        }
+
         /* Container */
         .calendar-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 96px 20px 20px; /* Extra top padding for fixed header */
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* Header */
@@ -343,6 +348,7 @@
             transition: all 0.3s ease;
             z-index: 2000;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 20px 0;
         }
 
@@ -365,6 +371,7 @@
             max-width: 400px;
             max-height: 85vh;
             overflow-y: auto;
+            overflow-x: hidden;
             transform: scale(0.9) translateY(20px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin: auto;
