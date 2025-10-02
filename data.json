@@ -9,7 +9,8 @@
         "type": "homework",
         "date": "2025-09-29",
         "createdBy": "admin",
-        "createdAt": "2025-09-28T21:00:00.000Z"
+        "createdAt": "2025-09-28T21:00:00.000Z",
+        "files": []
       },
       {
         "id": "1759170853402",
@@ -18,9 +19,9 @@
         "date": "2025-09-29",
         "description": "",
         "subject": "FYZ",
-        "file": null,
         "createdBy": "Adam",
-        "createdAt": "2025-09-29T18:34:13.402Z"
+        "createdAt": "2025-09-29T18:34:13.402Z",
+        "files": []
       },
       {
         "id": "1759171954479",
@@ -29,9 +30,9 @@
         "date": "2025-09-29",
         "description": "",
         "subject": "FYZ",
-        "file": null,
         "createdBy": "admin",
-        "createdAt": "2025-09-29T18:52:34.479Z"
+        "createdAt": "2025-09-29T18:52:34.479Z",
+        "files": []
       },
       {
         "id": "1759174245964",
@@ -40,9 +41,9 @@
         "date": "2025-09-29",
         "description": "",
         "subject": "UaK",
-        "file": null,
         "createdBy": "admin",
-        "createdAt": "2025-09-29T19:30:45.964Z"
+        "createdAt": "2025-09-29T19:30:45.964Z",
+        "files": []
       },
       {
         "id": "1759175596090",
@@ -51,9 +52,9 @@
         "date": "2025-09-29",
         "description": "",
         "subject": "BEN",
-        "file": null,
         "createdBy": "Margareta",
-        "createdAt": "2025-09-29T19:53:16.090Z"
+        "createdAt": "2025-09-29T19:53:16.090Z",
+        "files": []
       }
     ],
     "2025-10-01": [
@@ -65,7 +66,8 @@
         "type": "test",
         "date": "2025-10-01",
         "createdBy": "admin",
-        "createdAt": "2025-09-28T21:00:00.000Z"
+        "createdAt": "2025-09-28T21:00:00.000Z",
+        "files": []
       },
       {
         "id": "1759216769711",
@@ -74,9 +76,9 @@
         "date": "2025-10-01",
         "description": "Negr",
         "subject": "ŠPJ",
-        "file": null,
         "createdBy": "Vit",
-        "createdAt": "2025-09-30T07:19:29.711Z"
+        "createdAt": "2025-09-30T07:19:29.711Z",
+        "files": []
       }
     ],
     "2025-09-30": [
@@ -87,9 +89,9 @@
         "date": "2025-09-30",
         "description": "",
         "subject": "ESW",
-        "file": null,
         "createdBy": "admin",
-        "createdAt": "2025-09-29T19:27:19.460Z"
+        "createdAt": "2025-09-29T19:27:19.460Z",
+        "files": []
       }
     ],
     "2025-10-03": [
@@ -100,9 +102,9 @@
         "date": "2025-10-03",
         "description": "",
         "subject": "CJL",
-        "file": null,
         "createdBy": "admin",
-        "createdAt": "2025-10-01T18:27:36.217Z"
+        "createdAt": "2025-10-01T18:27:36.217Z",
+        "files": []
       }
     ],
     "2025-10-04": [
@@ -113,9 +115,9 @@
         "date": "2025-10-04",
         "description": "Vylizte mi prdel",
         "subject": "MAT",
-        "file": null,
         "createdBy": "admin",
-        "createdAt": "2025-10-01T18:38:45.135Z"
+        "createdAt": "2025-10-01T18:38:45.135Z",
+        "files": []
       }
     ],
     "2025-10-02": [
@@ -126,9 +128,9 @@
         "date": "2025-10-02",
         "description": "dfhdfh",
         "subject": null,
-        "file": null,
         "createdBy": "admin",
-        "createdAt": "2025-10-01T19:01:36.544Z"
+        "createdAt": "2025-10-01T19:01:36.544Z",
+        "files": []
       },
       {
         "id": "1759345752623",
@@ -137,15 +139,18 @@
         "date": "2025-10-02",
         "description": "kl",
         "subject": "ŠPJ",
-        "file": {
-          "name": "dell-poweredge-r230-intel-computer-servers-dell-server.jpg",
-          "type": "image/jpeg",
-          "size": 60264,
-          "githubPath": "attachments/1759345752623_dell-poweredge-r230-intel-computer-servers-dell-server.jpg",
-          "downloadUrl": "https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/attachments/1759345752623_dell-poweredge-r230-intel-computer-servers-dell-server.jpg"
-        },
         "createdBy": "admin",
-        "createdAt": "2025-10-01T19:09:13.433Z"
+        "createdAt": "2025-10-01T19:09:13.433Z",
+        "files": [
+          {
+            "name": "dell-poweredge-r230-intel-computer-servers-dell-server.jpg",
+            "type": "image/jpeg",
+            "size": 60264,
+            "githubPath": "attachments/1759345752623_dell-poweredge-r230-intel-computer-servers-dell-server.jpg",
+            "downloadUrl": "https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/attachments/1759345752623_dell-poweredge-r230-intel-computer-servers-dell-server.jpg",
+            "id": "dell-poweredge-r230-intel-computer-servers-dell-server.jpg_1759416293100"
+          }
+        ]
       }
     ],
     "2025-10-08": [
@@ -156,15 +161,18 @@
         "date": "2025-10-08",
         "description": "",
         "subject": "ZSV",
-        "file": {
-          "name": "IMG_0461.jpeg",
-          "type": "image/jpeg",
-          "size": 469126,
-          "githubPath": "attachments/1759345945432_IMG_0461.jpeg",
-          "downloadUrl": "https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/attachments/1759345945432_IMG_0461.jpeg"
-        },
         "createdBy": "Adam",
-        "createdAt": "2025-10-01T19:12:27.799Z"
+        "createdAt": "2025-10-01T19:12:27.799Z",
+        "files": [
+          {
+            "name": "IMG_0461.jpeg",
+            "type": "image/jpeg",
+            "size": 469126,
+            "githubPath": "attachments/1759345945432_IMG_0461.jpeg",
+            "downloadUrl": "https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/attachments/1759345945432_IMG_0461.jpeg",
+            "id": "IMG_0461.jpeg_1759416293100"
+          }
+        ]
       },
       {
         "id": "1759345948584",
@@ -173,15 +181,9 @@
         "date": "2025-10-08",
         "description": "",
         "subject": "ZSV",
-        "file": {
-          "name": "IMG_0461.jpeg",
-          "type": "image/jpeg",
-          "size": 469126,
-          "githubPath": "attachments/1759345948584_IMG_0461.jpeg",
-          "downloadUrl": "https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/attachments/1759345948584_IMG_0461.jpeg"
-        },
         "createdBy": "Adam",
-        "createdAt": "2025-10-01T19:12:30.689Z"
+        "createdAt": "2025-10-01T19:12:30.689Z",
+        "files": []
       }
     ]
   },
@@ -217,5 +219,5 @@
       "tier": "admin"
     }
   },
-  "lastUpdated": "2025-10-01T19:48:19.467Z"
+  "lastUpdated": "2025-10-02T14:45:31.743Z"
 }
