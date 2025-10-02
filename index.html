@@ -342,6 +342,8 @@
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 2000;
+            overflow-y: auto;
+            padding: 20px 0;
         }
 
         .modal-overlay.show {
@@ -361,8 +363,11 @@
             padding: 32px;
             width: 90%;
             max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
             transform: scale(0.9) translateY(20px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: auto;
         }
 
         .modal-overlay.show .modal {
@@ -833,6 +838,11 @@
                 padding: 20px;
                 width: 92%;
                 max-width: none;
+                max-height: 80vh;
+            }
+
+            .modal-overlay {
+                padding: 10px 0;
             }
 
             .form-input, .btn {
@@ -892,6 +902,16 @@
 
             .day-events {
                 gap: 2px;
+            }
+
+            .modal {
+                padding: 16px;
+                width: 95%;
+                max-height: 85vh;
+            }
+
+            .modal-overlay {
+                padding: 8px 0;
             }
         }
 
