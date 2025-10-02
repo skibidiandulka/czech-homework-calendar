@@ -339,7 +339,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(44, 42, 38, 0.4);
+            background: rgba(44, 42, 38, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -347,8 +347,9 @@
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 2000;
-            overflow: hidden; /* Prevent overlay scrolling */
-            padding: 20px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px 0;
         }
 
         .modal-overlay.show {
@@ -365,7 +366,7 @@
             background: var(--anthropic-card-bg);
             border-radius: var(--border-radius);
             box-shadow: 0 16px 64px var(--anthropic-shadow-strong);
-            padding: 32px 32px 60px 32px; /* Extra padding at bottom */
+            padding: 32px;
             width: 90%;
             max-width: 400px;
             max-height: 85vh;
@@ -488,7 +489,6 @@
             display: flex;
             gap: 12px;
             justify-content: flex-end;
-            margin-top: 24px;
         }
 
         .btn {
