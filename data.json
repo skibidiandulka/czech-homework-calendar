@@ -182,7 +182,15 @@
         "date": "2025-10-07",
         "description": "",
         "subject": null,
-        "files": [],
+        "files": [
+          {
+            "name": "MA Osobní dotazník NEW (1).pdf",
+            "type": "application/pdf",
+            "size": 147978,
+            "githubPath": "attachments/1759418167392_MA Osobní dotazník NEW (1).pdf",
+            "downloadUrl": "https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/attachments/1759418167392_MA Osobní dotazník NEW (1).pdf"
+          }
+        ],
         "createdBy": "admin",
         "createdAt": "2025-10-02T15:16:07.392Z"
       }
@@ -220,5 +228,5 @@
       "tier": "admin"
     }
   },
-  "lastUpdated": "2025-10-02T15:16:07.393Z"
+  "lastUpdated": "2025-10-02T15:16:09.090Z"
 }
