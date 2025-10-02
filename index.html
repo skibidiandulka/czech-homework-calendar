@@ -1130,70 +1130,6 @@
             }
         }
 
-        /* Toast notification for background uploads */
-        .upload-toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--anthropic-card-bg);
-            border: 1px solid var(--anthropic-border);
-            border-radius: var(--border-radius);
-            padding: 16px 20px;
-            box-shadow: 0 4px 16px var(--anthropic-shadow-strong);
-            z-index: 10000;
-            display: none;
-            max-width: 320px;
-            animation: slideInUp 0.3s ease-out;
-        }
-
-        .upload-toast.show {
-            display: block;
-        }
-
-        .upload-toast-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .upload-toast-spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--anthropic-border);
-            border-top-color: var(--anthropic-coral);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        .upload-toast-text {
-            font-size: 14px;
-            color: var(--anthropic-text);
-            font-weight: 500;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes slideInUp {
-            from {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .upload-toast {
-                bottom: 16px;
-                right: 16px;
-                left: 16px;
-                max-width: none;
-            }
-        }
     </style>
 </head>
 <body>
@@ -1410,8 +1346,36 @@
         async function loadDataFromDatabase() {
             try {
                 console.log('Loading data from GitHub...');
-                const response = await fetch(GITHUB_DATA_URL + '?cache=' + Date.now());
-                const data = await response.json();
+
+                // Use GitHub API instead of raw.githubusercontent.com for fresher data
+                const token = getApiToken();
+                const apiUrl = `https://api.github.com/repos/${GITHUB_REPO}/contents/data.json?t=${Date.now()}`;
+
+                let data;
+                if (token) {
+                    // Use API with token (no cache, fresh data)
+                    const response = await fetch(apiUrl, {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Cache-Control': 'no-cache'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const fileData = await response.json();
+                        // Decode base64 content
+                        const content = atob(fileData.content.replace(/\n/g, ''));
+                        data = JSON.parse(content);
+                        console.log('✅ Loaded fresh data from GitHub API');
+                    } else {
+                        throw new Error('API fetch failed, falling back to raw URL');
+                    }
+                } else {
+                    // Fallback to raw URL if no token
+                    const response = await fetch(GITHUB_DATA_URL + '?cache=' + Date.now());
+                    data = await response.json();
+                    console.log('⚠️ Loaded data from raw URL (may be cached)');
+                }
 
                 events = data?.events || {};
                 users = data?.users || {};
@@ -2416,24 +2380,11 @@
             }
         }
 
-        // Toast notification functions
-        function showUploadToast(message) {
-            const toast = document.getElementById('uploadToast');
-            const text = document.getElementById('uploadToastText');
-            text.textContent = message;
-            toast.classList.add('show');
-        }
-
-        function hideUploadToast() {
-            const toast = document.getElementById('uploadToast');
-            toast.classList.remove('show');
-        }
-
         // Background file upload function
         async function uploadFilesInBackground(files, eventId) {
             if (files.length === 0) return [];
 
-            showUploadToast(`Nahrávám ${files.length} soubor(ů) na pozadí...`);
+            console.log(`📎 Uploading ${files.length} file(s) in background...`);
 
             try {
                 // Upload all files in parallel
@@ -2443,22 +2394,10 @@
                 // Filter out failed uploads
                 const successfulUploads = uploadResults.filter(result => result !== null);
 
-                if (successfulUploads.length === files.length) {
-                    showUploadToast('✅ Všechny soubory nahrány!');
-                    setTimeout(hideUploadToast, 3000);
-                } else if (successfulUploads.length > 0) {
-                    showUploadToast(`⚠️ Nahráno ${successfulUploads.length}/${files.length} souborů`);
-                    setTimeout(hideUploadToast, 5000);
-                } else {
-                    showUploadToast('❌ Nahrávání selhalo');
-                    setTimeout(hideUploadToast, 5000);
-                }
-
+                console.log(`✅ Upload complete: ${successfulUploads.length}/${files.length} files uploaded`);
                 return successfulUploads;
             } catch (error) {
                 console.error('Background upload failed:', error);
-                showUploadToast('❌ Nahrávání selhalo');
-                setTimeout(hideUploadToast, 5000);
                 return [];
             }
         }
@@ -2780,13 +2719,5 @@
             checkStoredLogin();
         };
     </script>
-
-    <!-- Toast notification for background uploads -->
-    <div id="uploadToast" class="upload-toast">
-        <div class="upload-toast-content">
-            <div class="upload-toast-spinner"></div>
-            <div class="upload-toast-text" id="uploadToastText">Nahrávám soubory...</div>
-        </div>
-    </div>
 </body>
 </html>
