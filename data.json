@@ -220,6 +220,19 @@
         "createdBy": "Vit",
         "createdAt": "2025-10-02T16:41:26.148Z"
       }
+    ],
+    "2025-10-31": [
+      {
+        "id": "1759476679182",
+        "name": "Prdel",
+        "type": "homework",
+        "date": "2025-10-31",
+        "description": "Smrdel",
+        "subject": "ESW",
+        "files": [],
+        "createdBy": "admin",
+        "createdAt": "2025-10-03T07:31:19.182Z"
+      }
     ]
   },
   "users": {
@@ -252,12 +265,7 @@
       "password": "sedlacek",
       "name": "Vit",
       "tier": "admin"
-    },
-    "Sasa ": {
-      "password": "cic",
-      "name": "Sasa ",
-      "tier": "basic"
     }
   },
-  "lastUpdated": "2025-10-03T07:28:47.910Z"
+  "lastUpdated": "2025-10-03T07:31:19.185Z"
 }
