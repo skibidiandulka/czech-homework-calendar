@@ -241,6 +241,19 @@
         "createdBy": "admin",
         "createdAt": "2025-10-03T07:31:19.182Z"
       }
+    ],
+    "2025-10-16": [
+      {
+        "id": "1759477487783",
+        "name": "Negr",
+        "type": "test",
+        "date": "2025-10-16",
+        "description": "Pani Janovova ♥️♥️♥️",
+        "subject": "FYZ",
+        "files": [],
+        "createdBy": "admin",
+        "createdAt": "2025-10-03T07:44:47.783Z"
+      }
     ]
   },
   "users": {
@@ -275,5 +288,5 @@
       "tier": "admin"
     }
   },
-  "lastUpdated": "2025-10-03T07:31:21.473Z"
+  "lastUpdated": "2025-10-03T07:44:47.785Z"
 }
