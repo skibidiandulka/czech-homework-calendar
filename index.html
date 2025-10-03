@@ -353,15 +353,11 @@
             width: 200vw;
             height: 200vh;
             background: rgba(44, 42, 38, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 2000;
             overflow: hidden; /* Block all scrolling on overlay */
-            padding: 20px;
             touch-action: none; /* Prevent touch scrolling on mobile */
             overscroll-behavior: contain; /* Prevent pull-to-refresh and overscroll */
         }
@@ -377,6 +373,10 @@
         }
 
         .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
             background: var(--anthropic-card-bg);
             border-radius: var(--border-radius);
             box-shadow: 0 16px 64px var(--anthropic-shadow-strong);
@@ -386,17 +386,16 @@
             max-height: 85vh;
             overflow-y: auto;
             overflow-x: hidden;
-            transform: scale(0.9) translateY(20px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            margin: auto;
+            z-index: 2001; /* Above overlay */
         }
 
         .modal-overlay.show .modal {
-            transform: scale(1) translateY(0);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .modal-overlay.hiding .modal {
-            transform: scale(0.9) translateY(20px);
+            transform: translate(-50%, calc(-50% + 20px)) scale(0.9);
         }
 
         .modal-header {
