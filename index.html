@@ -53,6 +53,13 @@
         }
 
         /* Prevent background scrolling when modal is open - ROBUST SOLUTION */
+        html.modal-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
         body.modal-open {
             position: fixed;
             width: 100%;
@@ -338,10 +345,13 @@
         /* Login Modal */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            /* Extended coverage beyond viewport - fixes mobile Safari UI bars issue */
+            top: -50vh;
+            left: -50vw;
+            right: -50vw;
+            bottom: -50vh;
+            width: 200vw;
+            height: 200vh;
             background: rgba(44, 42, 38, 0.6);
             display: flex;
             align-items: center;
@@ -1429,14 +1439,18 @@
 
             // Apply fixed position with negative top offset to maintain visual position
             document.body.style.top = `-${scrollPosition}px`;
-            lockScroll();
+
+            // Add modal-open class to both html and body
+            document.documentElement.classList.add('modal-open');
+            document.body.classList.add('modal-open');
 
             // Extra protection for mobile devices
             document.documentElement.style.overflow = 'hidden';
         }
 
         function unlockScroll() {
-            // Remove modal-open class
+            // Remove modal-open class from both html and body
+            document.documentElement.classList.remove('modal-open');
             document.body.classList.remove('modal-open');
 
             // Remove inline styles
