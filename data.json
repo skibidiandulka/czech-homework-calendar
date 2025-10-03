@@ -252,7 +252,12 @@
       "password": "sedlacek",
       "name": "Vit",
       "tier": "admin"
+    },
+    "Sasa ": {
+      "password": "cic",
+      "name": "Sasa ",
+      "tier": "basic"
     }
   },
-  "lastUpdated": "2025-10-02T16:41:26.150Z"
+  "lastUpdated": "2025-10-03T07:28:47.910Z"
 }
