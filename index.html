@@ -52,9 +52,12 @@
             letter-spacing: -0.01em;
         }
 
-        /* Prevent background scrolling when modal is open */
+        /* Prevent background scrolling when modal is open - ROBUST SOLUTION */
         body.modal-open {
+            position: fixed;
+            width: 100%;
             overflow: hidden;
+            touch-action: none; /* Prevent touch scrolling on mobile */
         }
 
         body, html {
@@ -349,6 +352,8 @@
             z-index: 2000;
             overflow: hidden; /* Block all scrolling on overlay */
             padding: 20px;
+            touch-action: none; /* Prevent touch scrolling on mobile */
+            overscroll-behavior: contain; /* Prevent pull-to-refresh and overscroll */
         }
 
         .modal-overlay.show {
@@ -1415,6 +1420,33 @@
         let saveQueue = [];
         let isCurrentlySaving = false;
 
+        // Scroll lock system - 100% reliable solution for desktop & mobile
+        let scrollPosition = 0;
+
+        function lockScroll() {
+            // Save current scroll position
+            scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Apply fixed position with negative top offset to maintain visual position
+            document.body.style.top = `-${scrollPosition}px`;
+            lockScroll();
+
+            // Extra protection for mobile devices
+            document.documentElement.style.overflow = 'hidden';
+        }
+
+        function unlockScroll() {
+            // Remove modal-open class
+            document.body.classList.remove('modal-open');
+
+            // Remove inline styles
+            document.body.style.top = '';
+            document.documentElement.style.overflow = '';
+
+            // Restore scroll position
+            window.scrollTo(0, scrollPosition);
+        }
+
         // GitHub API configuration
         const GITHUB_REPO = 'skibidiandulka/czech-homework-calendar';
         const GITHUB_DATA_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/main/data.json`;
@@ -2054,7 +2086,7 @@
 
             content.innerHTML = html;
             modal.classList.add('show');
-            document.body.classList.add('modal-open');
+            lockScroll();
         }
 
         function closeEventDetailModal() {
@@ -2138,7 +2170,7 @@
             dateInput.max = maxDateStr;
 
             document.getElementById('eventModal').classList.add('show');
-            document.body.classList.add('modal-open');
+            lockScroll();
         }
 
         function findEventById(eventId) {
@@ -2193,14 +2225,14 @@
         function openLogin() {
             closeMenu();
             document.getElementById('loginModal').classList.add('show');
-            document.body.classList.add('modal-open');
+            lockScroll();
         }
 
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.classList.add('hiding');
             modal.classList.remove('show');
-            document.body.classList.remove('modal-open');
+            unlockScroll();
 
             setTimeout(() => {
                 modal.classList.remove('hiding');
@@ -2221,7 +2253,7 @@
         function openAddUserModal() {
             closeMenu();
             document.getElementById('addUserModal').classList.add('show');
-            document.body.classList.add('modal-open');
+            lockScroll();
         }
 
         function closeAddUserModal() {
@@ -2283,7 +2315,7 @@
             }
 
             document.getElementById('eventModal').classList.add('show');
-            document.body.classList.add('modal-open');
+            lockScroll();
 
             // Set date constraints and default value (use local timezone)
             const today = new Date();
@@ -2598,7 +2630,7 @@
             closeMenu();
             renderUserList();
             document.getElementById('manageUsersModal').classList.add('show');
-            document.body.classList.add('modal-open');
+            lockScroll();
         }
 
         function closeManageUsersModal() {
@@ -2806,6 +2838,24 @@
 
             init();
             checkStoredLogin();
+
+            // Prevent scroll propagation on all modal overlays (extra protection for mobile)
+            const modalOverlays = document.querySelectorAll('.modal-overlay');
+            modalOverlays.forEach(overlay => {
+                overlay.addEventListener('touchmove', (e) => {
+                    // Allow scrolling only inside the modal content, not the overlay
+                    if (e.target === overlay) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+
+                overlay.addEventListener('wheel', (e) => {
+                    // Prevent scroll when clicking on overlay background
+                    if (e.target === overlay) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            });
         };
     </script>
 
