@@ -229,7 +229,15 @@
         "date": "2025-10-31",
         "description": "Smrdel",
         "subject": "ESW",
-        "files": [],
+        "files": [
+          {
+            "name": "IMG-20250926-WA0012.jpg",
+            "type": "image/jpeg",
+            "size": 16192,
+            "githubPath": "attachments/1759476679182_IMG-20250926-WA0012.jpg",
+            "downloadUrl": "https://raw.githubusercontent.com/skibidiandulka/czech-homework-calendar/main/attachments/1759476679182_IMG-20250926-WA0012.jpg"
+          }
+        ],
         "createdBy": "admin",
         "createdAt": "2025-10-03T07:31:19.182Z"
       }
@@ -267,5 +275,5 @@
       "tier": "admin"
     }
   },
-  "lastUpdated": "2025-10-03T07:31:19.185Z"
+  "lastUpdated": "2025-10-03T07:31:21.473Z"
 }
