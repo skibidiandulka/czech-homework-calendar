@@ -1509,7 +1509,7 @@
 
                 isDataLoaded = true;
 
-                console.log('Data loaded successfully from GitHub:', { events, users });
+                console.log('Data loaded successfully from GitHub');
 
                 // Re-render calendar after data loads
                 renderDesktopCalendar();
@@ -2710,24 +2710,8 @@
             const password = document.getElementById('password').value.trim();
             const stayLoggedIn = document.getElementById('stayLoggedIn').checked;
 
-            // Debug info for mobile
-            console.log('Login attempt:', { username, password, availableUsers: Object.keys(users) });
-
             // Find user by case-insensitive username
             const userKey = Object.keys(users).find(key => key.toLowerCase() === username.toLowerCase());
-
-            console.log('Found user key:', userKey);
-
-            if (userKey) {
-                const storedPassword = users[userKey].password;
-                console.log('Password comparison:', {
-                    entered: password,
-                    enteredLower: password.toLowerCase(),
-                    stored: storedPassword,
-                    storedLower: storedPassword.toLowerCase(),
-                    match: storedPassword.toLowerCase() === password.toLowerCase()
-                });
-            }
 
             if (userKey && users[userKey].password.toLowerCase() === password.toLowerCase()) {
                 currentUser = {
@@ -2747,10 +2731,7 @@
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 document.getElementById('stayLoggedIn').checked = false;
-
-                console.log('Login successful:', currentUser);
             } else {
-                console.log('Login failed - user or password incorrect');
                 alert('Nesprávné jméno nebo heslo');
             }
         }
@@ -2843,11 +2824,7 @@
             // Load data from database first
             await loadDataFromDatabase();
 
-            console.log('=== DEBUG INFO ===');
-            console.log('Users data:', users);
-            console.log('Events data:', events);
             console.log('Data loaded:', isDataLoaded);
-            console.log('==============================');
 
             init();
             checkStoredLogin();
