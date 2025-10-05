@@ -228,30 +228,105 @@
       "tier": "admin",
       "name": "Administrátor"
     },
-    "student": {
-      "password": "heslo",
-      "tier": "basic",
-      "name": "Testovací student"
-    },
     "Adam": {
       "password": "Roth",
-      "name": "Adam",
+      "name": "Adam Roth",
       "tier": "basic"
     },
-    "user": {
-      "password": "user",
-      "name": "User",
+    "Vit": {
+      "password": "Sedlacek",
+      "name": "Vit Sedlacek",
+      "tier": "basic"
+    },
+    "Julius": {
+      "password": "Kiwalski",
+      "name": "Julius Kiwalski",
       "tier": "basic"
     },
     "Margareta": {
-      "password": "asdf",
-      "name": "Margareta",
-      "tier": "admin"
+      "password": "Kincikova",
+      "name": "Margareta Kincikova",
+      "tier": "basic"
     },
-    "Vit": {
-      "password": "sedlacek",
-      "name": "Vit",
-      "tier": "admin"
+    "Kristyna": {
+      "password": "Terbrova",
+      "name": "Kristyna Terbrova",
+      "tier": "basic"
+    },
+    "Anastasie": {
+      "password": "Lysova",
+      "name": "Anastasie Lysova",
+      "tier": "basic"
+    },
+    "Melissa": {
+      "password": "Ercin",
+      "name": "Melissa Ercin",
+      "tier": "basic"
+    },
+    "Khadia": {
+      "password": "Babykova",
+      "name": "Khadia Babykova",
+      "tier": "basic"
+    },
+    "Tobias": {
+      "password": "Mansfeld",
+      "name": "Tobias Mansfeld",
+      "tier": "basic"
+    },
+    "Oliver": {
+      "password": "Rytir",
+      "name": "Oliver Rytir",
+      "tier": "basic"
+    },
+    "Alexandr": {
+      "password": "Henc",
+      "name": "Alexandr Henc",
+      "tier": "basic"
+    },
+    "Stepan": {
+      "password": "Urbanek",
+      "name": "Stepan Urbanek",
+      "tier": "basic"
+    },
+    "Irind": {
+      "password": "Zelka",
+      "name": "Irind Zelka",
+      "tier": "basic"
+    },
+    "Tereza": {
+      "password": "Mala",
+      "name": "Tereza Mala",
+      "tier": "basic"
+    },
+    "Magdalena": {
+      "password": "Beznoskova",
+      "name": "Magdalena Beznoskova",
+      "tier": "basic"
+    },
+    "Anna": {
+      "password": "Miracka",
+      "name": "Anna Miracka",
+      "tier": "basic"
+    },
+    "Tomas": {
+      "password": "Hebelka",
+      "name": "Tomas Hebelka",
+      "tier": "basic"
+    },
+    "TobiasSadilek": {
+      "password": "Sadilek",
+      "name": "Tobias Sadilek",
+      "tier": "basic"
+    },
+    "AdamSameliak": {
+      "password": "Sameliak",
+      "name": "Adam Sameliak",
+      "tier": "basic"
+    },
+    "AlexandrCicerijukin": {
+      "password": "Cicerijukin",
+      "name": "Alexandr Cicerijukin",
+      "tier": "basic"
     }
   },
   "lastUpdated": "2025-10-02T16:41:26.150Z"
